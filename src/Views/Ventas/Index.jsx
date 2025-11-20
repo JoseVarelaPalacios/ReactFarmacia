@@ -50,9 +50,25 @@ const Ventas = () => {
   };
 
   const getMedicamentos = async () => {
-    const res = await sendRequest('GET', '', '/api/medicamentos', '');
-    setMedicamentos(res.data);
+    try {
+      let allMedicamentos = [];
+      let page = 1;
+      let totalPages = 1;
+  
+      do {
+        const res = await sendRequest('GET', '', `/api/medicamentos?page=${page}`, ''); 
+        allMedicamentos = [...allMedicamentos, ...res.data]; // Unimos todas las páginas
+        totalPages = res.last_page || Math.ceil(res.total / res.per_page); // Calculamos total de páginas
+        page++;
+      } while (page <= totalPages);
+  
+      setMedicamentos(allMedicamentos); // Guardamos todos los medicamentos
+    } catch (error) {
+      console.error('Error al obtener los medicamentos:', error);
+    }
   };
+  
+  
 
   const deleteVenta = (id, cliente) => {
     confirmation(cliente, `/api/ventas/${id}`, 'ventas');
