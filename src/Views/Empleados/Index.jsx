@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import DivAdd from '../../Components/DivAdd';
+import DivAdd from '../../Components/DivAdd'; 
 import DivTable from '../../Components/DivTable';
 import { Link } from 'react-router-dom';
 import { confirmation, sendRequest } from '../../functions';
 
-const Clientes = () => {
+// 1. CORRECCIÓN: El nombre del componente debe ser Empleados
+const Empleados = () => {
   const [empleados, setEmpleados] = useState([]);
   const [classLoad, setClassLoad] = useState('');
   const [classTable, setClassTable] = useState('d-none');
@@ -25,51 +26,70 @@ const Clientes = () => {
   };
 
   return (
-    <div className="container-fluid p-4 bg-light">
-      <DivAdd>
-        <Link to="/empleados/create" className="btn btn-primary mb-3">
-          <i className="fa-solid fa-circle-plus"></i> Agregar Empleado
+    <div className="container-fluid p-4 bg-white">
+      
+      {/* 2. HEADER PROFESIONAL: Título con ícono de corbata */}
+      <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h2 className="text-primary fw-bold mb-0">
+          <i className="fa-solid fa-user-tie me-2"></i> Personal de Farmacia
+        </h2>
+        <Link to="/empleados/create" className="btn btn-primary rounded-pill px-4 shadow-sm">
+          <i className="fa-solid fa-user-plus me-2"></i> Nuevo Empleado
         </Link>
-      </DivAdd>
-      <DivTable col="6" off="3" classLoad={classLoad} classTable={classTable}>
-        <table className="table table-striped table-hover border rounded">
-          <thead className="table-dark text-center">
-            <tr>
-              <th>#</th>
-              <th>Nombre</th>
-              <th>Apellidos</th>
-              <th>Correo</th>
-              <th>Editar</th>
-              <th>Eliminar</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            {empleados.map((row, i) => (
-              <tr key={row.id} className="text-center align-middle">
-                <td>{i + 1}</td>
-                <td>{row.nombre}</td>
-                <td>{row.apellidos}</td>
-                <td>{row.correo}</td>
-                <td>
-                  <Link to={'/empleados/edit/' + row.id} className="btn btn-warning btn-sm">
-                    <i className="fa-solid fa-edit"></i>
-                  </Link>
-                </td>
-                <td>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => deleteEmpleado(row.id, row.nombre)}
-                  >
-                    <i className="fa-solid fa-trash"></i>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      </div>
+
+      {/* 3. ANCHO DE TABLA: Usamos col="10" para que quepan los correos largos */}
+      <DivTable col="10" off="1" classLoad={classLoad} classTable={classTable}>
+        
+        {/* Estado Vacío */}
+        {empleados.length === 0 && classLoad === 'd-none' && (
+            <div className="alert alert-info text-center mt-3" role="alert">
+                <i className="fa-solid fa-info-circle me-2"></i> No hay empleados registrados.
+            </div>
+        )}
+
+        {empleados.length > 0 && (
+            <table className="table table-striped table-hover border rounded shadow-sm">
+            <thead className="table-primary text-center text-uppercase">
+                <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Correo Electrónico</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody className="table-group-divider">
+                {empleados.map((row, i) => (
+                <tr key={row.id} className="text-center align-middle">
+                    <td>{i + 1}</td>
+                    {/* Nombres capitalizados para formalidad */}
+                    <td className="text-capitalize fw-semibold">{row.nombre}</td>
+                    <td className="text-capitalize">{row.apellidos}</td>
+                    {/* Correo en fuente monoespaciada o normal, color muted */}
+                    <td className="text-muted">{row.correo}</td>
+                    <td>
+                    <Link to={'/empleados/edit/' + row.id} className="btn btn-warning btn-sm shadow-sm">
+                        <i className="fa-solid fa-edit"></i>
+                    </Link>
+                    </td>
+                    <td>
+                    <button
+                        className="btn btn-danger btn-sm shadow-sm"
+                        onClick={() => deleteEmpleado(row.id, row.nombre)}
+                    >
+                        <i className="fa-solid fa-trash"></i>
+                    </button>
+                    </td>
+                </tr>
+                ))}
+            </tbody>
+            </table>
+        )}
       </DivTable>
     </div>
   );
 };
 
-export default Clientes;
+export default Empleados; // 4. IMPORTANTE: Exportar con el nombre correcto
