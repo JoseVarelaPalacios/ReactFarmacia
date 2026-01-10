@@ -33,31 +33,37 @@ const FormCli = ({ id, title }) => {  // Desestructuración de props
     };
 
     const save = async (e) => {
-        e.preventDefault();
-        if (id) {
-            method = 'PUT';
-            url = `/api/clientes/${id}`;
-            navigate('/clientes');  
-        }
-        
-        const formData = {
-            nombre,
-            apellidos,
-            direccion
-        };
+    e.preventDefault();
+    
+    // 1. Definimos el método y la URL por defecto (para CREAR)
+    let method = 'POST';
+    let url = '/api/clientes';
 
-        const res = await sendRequest(method, formData, url, '');
-        if (res.status === true) {
-            setNombre('');
-            setApellidos('');
-            setDireccion('');
-            
-            // Si es un POST, redirigir al inicio
-            if (method === 'POST') {
-                navigate('/clientes');  // Redirigir a la página principal
-            }
-        }
+    // 2. Si hay ID, cambiamos a EDITAR
+    if (id) {
+        method = 'PUT';
+        url = `/api/clientes/${id}`;
+    }
+    
+    const formData = {
+        nombre,
+        apellidos,
+        direccion
     };
+
+    // 3. Enviamos la petición y ESPERAMOS (await) a que termine
+    const res = await sendRequest(method, formData, url, '');
+
+    // 4. Solo si el servidor dice "Todo bien" (status === true), nos movemos
+    if (res.status === true) {
+        setNombre('');
+        setApellidos('');
+        setDireccion('');
+         
+        // tanto para POST como para PUT
+        navigate('/clientes'); 
+    }
+};
 
     return (
         <div className="container-fluid bg-light vh-100 d-flex justify-content-center align-items-center">
